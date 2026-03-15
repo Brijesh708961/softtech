@@ -100,6 +100,11 @@ const verifyOTP = async (req, res) => {
   try {
     const { otpCode } = req.body;
 
+    // ADD THESE DEBUG LINES
+    console.log("SESSION ID:", req.sessionID);
+    console.log("SESSION DATA:", req.session);
+    console.log("TEMP ADMIN ID:", req.session.tempAdminId);
+
     // check if tempAdminId exists in session
     if (!req.session.tempAdminId) {
       return res.status(401).json({
