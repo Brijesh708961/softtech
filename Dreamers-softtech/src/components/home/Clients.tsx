@@ -7,7 +7,7 @@ import client3 from "../../assets/clients/client3.png";
 const clientImages = [
   { img: client1, name: "Bharat Diesel Service" },
   { img: client2, name: "RGPV University" },
-  { img: client3, name: "Air Drive Digital" },
+  { img: client3, name: "Timo FX" },
 ];
 
 const repeated = Array.from({ length: 8 }, () => clientImages).flat();
