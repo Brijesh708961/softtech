@@ -136,6 +136,7 @@ app.use(
       "http://localhost:5173",
       "https://softtech1.vercel.app",
       "https://dreamers-server.onrender.com",
+      "https://softtech-production.up.railway.app",
     ],
     credentials: true,
   }),
