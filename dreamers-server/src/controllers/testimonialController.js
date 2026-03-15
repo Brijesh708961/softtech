@@ -2,8 +2,7 @@
 
 const testimonialService = require("../services/testimonialService");
 
-const fileUrl = (filename) =>
-  `${import.meta.env.VITE_API_URL}/uploads/${filename}`;
+const fileUrl = (filename) => `${process.env.BASE_URL}/uploads/${filename}`;
 //
 // ── GET ALL ────────────────────────────────────────────────────
 const getAllTestimonials = async (req, res) => {
