@@ -2,7 +2,14 @@ const nodemailer = require("nodemailer");
 
 // nodemailer → creates connection to Gmail SMTP server
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  // service: "gmail",
+  // auth: {
+  //   user: process.env.MAIL_USER,
+  //   pass: process.env.MAIL_PASS,
+  // },
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
@@ -114,7 +121,16 @@ const sendRejectionEmail = async (toEmail, name) => {
 
 // ── SEND QUOTE NOTIFICATION ────────────────────────────────────
 const sendQuoteNotification = async (quoteData) => {
-  const { name, email, phone, company, projectType, budgetRange, timeline, description } = quoteData;
+  const {
+    name,
+    email,
+    phone,
+    company,
+    projectType,
+    budgetRange,
+    timeline,
+    description,
+  } = quoteData;
 
   await transporter.sendMail({
     from: `"Dreamers Softtech" <${process.env.MAIL_USER}>`,
@@ -166,4 +182,9 @@ const sendQuoteNotification = async (quoteData) => {
   });
 };
 
-module.exports = { sendOTPEmail, sendApprovalEmail, sendRejectionEmail, sendQuoteNotification };
+module.exports = {
+  sendOTPEmail,
+  sendApprovalEmail,
+  sendRejectionEmail,
+  sendQuoteNotification,
+};
