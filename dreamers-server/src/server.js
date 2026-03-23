@@ -125,6 +125,7 @@ const proposalRoutes = require("./routes/proposalRoutes");
 
 const cron = require("node-cron");
 const { syncBlogsFromDrive } = require("./services/blogSync");
+const uploadRoutes = require("./routes/uploadRoutes");
 
 const { isAuthenticated } = require("./middleware/authMiddleware");
 
@@ -182,6 +183,7 @@ app.use("/api/stats", statsRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/visitors", visitorRoutes);
 app.use("/api/proposals", proposalRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // ── BASE ROUTE ─────────────────────────────────────────────────
 app.get("/", (req, res) => {

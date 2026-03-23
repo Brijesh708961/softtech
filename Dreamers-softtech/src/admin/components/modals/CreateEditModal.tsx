@@ -1,7 +1,7 @@
-import { useRef } from "react";
+import { useState, useRef } from "react";
+import { Upload, X, Loader2 } from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { X } from "lucide-react";
 import type { BlogPost, ModalMode } from "../../types/blog.types";
 import TagBadge from "../TagBadge";
 
@@ -216,14 +216,12 @@ const CreateEditModal = ({
 
             {/* Cover Image */}
             <div>
-              <label className={labelCls}>Cover Image URL</label>
-              <input
+              <label className={labelCls}>Cover Image</label>
+              <CoverImageUpload
                 value={formData.coverImage}
-                onChange={(e) =>
-                  setFormData((f) => ({ ...f, coverImage: e.target.value }))
+                onChange={(url) =>
+                  setFormData((f) => ({ ...f, coverImage: url }))
                 }
-                placeholder="https://..."
-                className={inputCls}
               />
             </div>
 
@@ -315,6 +313,106 @@ const CreateEditModal = ({
         </div>
       </div>
     </>
+  );
+};
+
+const CoverImageUpload = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+}) => {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/upload`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      onChange(data.url);
+    } catch (err: any) {
+      setError("Upload failed. Try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      {/* Preview */}
+      {value && (
+        <div className="relative w-full h-32 rounded-xl overflow-hidden border border-gray-200">
+          <img src={value} alt="Cover" className="w-full h-full object-cover" />
+          <button
+            onClick={() => onChange("")}
+            className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-all"
+          >
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+      )}
+
+      {/* Upload button */}
+      {!value && (
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          className="w-full h-24 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#C89A3D]/50 hover:bg-[#C89A3D]/5 transition-all cursor-pointer disabled:opacity-50"
+        >
+          {uploading ? (
+            <Loader2 className="w-5 h-5 text-[#C89A3D] animate-spin" />
+          ) : (
+            <Upload className="w-5 h-5 text-gray-400" />
+          )}
+          <span className="text-xs text-gray-400">
+            {uploading ? "Uploading..." : "Click to upload image"}
+          </span>
+          <span className="text-[10px] text-gray-300">
+            PNG, JPG, WEBP up to 5MB
+          </span>
+        </button>
+      )}
+
+      {/* Change button when image exists */}
+      {value && (
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          className="w-full py-2 border border-gray-200 rounded-xl text-xs text-gray-500 hover:border-[#C89A3D]/40 hover:text-[#C89A3D] transition-all"
+        >
+          {uploading ? "Uploading..." : "Change image"}
+        </button>
+      )}
+
+      {error && <p className="text-xs text-red-400">{error}</p>}
+
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp"
+        onChange={handleFile}
+        className="hidden"
+      />
+    </div>
   );
 };
 
