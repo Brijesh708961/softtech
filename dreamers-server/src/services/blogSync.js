@@ -5,14 +5,18 @@ const path = require("path");
 
 const prisma = new PrismaClient();
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(
-    __dirname,
-    "../../steady-shard-428702-m8-b6681c9927cd.json",
-  ),
-  scopes: ["https://www.googleapis.com/auth/drive.readonly"],
-});
-
+const auth = process.env.GOOGLE_SERVICE_ACCOUNT
+  ? new google.auth.GoogleAuth({
+      credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT),
+      scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+    })
+  : new google.auth.GoogleAuth({
+      keyFile: path.join(
+        __dirname,
+        "../../steady-shard-428702-m8-b6681c9927cd.json",
+      ),
+      scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+    });
 const drive = google.drive({ version: "v3", auth });
 const FOLDER_ID = "1fz92FX4zca2i4jJuox2psRFXLc3Ac_Lq";
 
