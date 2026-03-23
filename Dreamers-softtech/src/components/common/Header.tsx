@@ -41,7 +41,12 @@ const Header = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-3 group">
+            <img
+              src="/src/assets/common/navbar1.png"
+              alt="Dreamers Softtech Logo"
+              className="h-10 w-auto object-contain"
+            />
             <div className="flex flex-col leading-none">
               <span
                 className={`text-lg font-extrabold tracking-tight transition-colors duration-300 ${
@@ -55,7 +60,7 @@ const Header = () => {
                   scrolled ? "text-gray-400" : "text-white/50"
                 }`}
               >
-                LLP
+                {/* LLP */}
               </span>
             </div>
           </Link>

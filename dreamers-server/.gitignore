@@ -13,6 +13,8 @@
 #         uploads/
 #         \
 
+# .gitignore
+steady-shard-428702-m8-b6681c9927cd.json
 
 node_modules
 .env

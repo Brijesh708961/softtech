@@ -123,6 +123,9 @@ const testimonialRoutes = require("./routes/testimonialRoutes");
 const visitorRoutes = require("./routes/visitorRoutes");
 const proposalRoutes = require("./routes/proposalRoutes");
 
+const cron = require("node-cron");
+const { syncBlogsFromDrive } = require("./services/blogSync");
+
 const { isAuthenticated } = require("./middleware/authMiddleware");
 
 const prisma = new PrismaClient();
@@ -146,6 +149,9 @@ app.use(express.json());
 app.set("trust proxy", 1); // ✅ required for Render/Railway proxy
 
 // ── SESSION ────────────────────────────────────────────────────
+// ── SESSION ────────────────────────────────────────────────────
+const isProduction = process.env.NODE_ENV === "production";
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "dreamers-secret-key",
@@ -157,10 +163,11 @@ app.use(
       dbRecordIdFunction: undefined,
     }),
     cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: "none",
-      secure: true,
+      // 🟢 Fix: Only use 'secure' and 'none' on the live server
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     },
   }),
 );
@@ -204,6 +211,12 @@ app.use((req, res) => {
     message: `Route ${req.originalUrl} not found`,
   });
 });
+
+// ── BLOG SYNC CRON ─────────────────────────────────────────────
+cron.schedule("*/10 * * * *", () => {
+  syncBlogsFromDrive();
+});
+syncBlogsFromDrive(); // run once on startup
 
 // ── SERVER STARTUP ─────────────────────────────────────────────
 async function startServer() {

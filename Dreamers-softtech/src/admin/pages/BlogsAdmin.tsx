@@ -211,16 +211,31 @@ const BlogsAdmin = () => {
                 className={`${inputCls} pl-9`}
               />
             </div>
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as FilterStatus)}
-              className={`${inputCls} w-36`}
-            >
-              <option value="all">All Status</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
-              <option value="archived">Archived</option>
-            </select>
+            // Replace the filterStatus select with this
+            <div className="flex items-center gap-2">
+              <select
+                value={filterStatus}
+                onChange={(e) =>
+                  setFilterStatus(e.target.value as FilterStatus)
+                }
+                className={`${inputCls} w-36`}
+              >
+                <option value="all">All Status</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+                <option value="archived">Archived</option>
+              </select>
+              {/* New drafts badge */}
+              {stats.draft > 0 && (
+                <span
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-100 text-amber-700 text-xs font-medium cursor-pointer"
+                  onClick={() => setFilterStatus("draft")}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  {stats.draft} draft{stats.draft !== 1 ? "s" : ""} pending
+                </span>
+              )}
+            </div>
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
